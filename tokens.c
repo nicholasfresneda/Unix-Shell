@@ -33,10 +33,9 @@ void tokenize(char* line, vec * tokens)
       //put token into vector
       else if ( count != 0) 
       {
-         char *token = malloc(count * sizeof(char));
+         char *token = calloc(count + 1, sizeof(char));
          char *ptr = &line[i - count];
          strncpy(token, ptr, count);
-         token[count] = '\0';
          push_vec(tokens, token);
          free(token);
          //push to vec

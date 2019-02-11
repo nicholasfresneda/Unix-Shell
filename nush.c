@@ -7,6 +7,24 @@
 #include "tokens.h"
 #include "vec.h"
 
+void execute_arg(char * argv[])
+{
+    int cpid;
+        if ((cpid = fork())) 
+        {
+            int status;
+            waitpid(cpid, &status, 0);
+        }
+        else
+        {
+            char* arg[64];
+            memcpy(arg, &argv[1], sizeof(char*) * sizeof(*argv));
+            execvp(argv[1], arg);
+        }
+}
+/**
+ *  Given a vector of inputs, executes the command.
+ */
 void
 execute(vec* input)
 {
@@ -38,9 +56,19 @@ execute(vec* input)
     }
 }
 
+/**
+ *  Entry point for nush. Runs loop that reads a line of input
+ *  and executes it. Terminates upon an 'exit' command or at end of file.
+ */
 int
 main(int argc, char* argv[])
 {
+    //run the script argument (if there is one)
+    if (argc != 1)
+    {
+        execute_arg(argv);
+    }
+
     char cmd[256];
     while (1)
     {
@@ -51,19 +79,33 @@ main(int argc, char* argv[])
             printf("\n");
             exit(0);
         }
+
+        if(cmd[0] == '\n')
+        {
+            continue;
+        }
+
         vec* input = make_vec();
         tokenize(cmd, input);
         if (strcmp("exit", input->data[0]) == 0)
         {
+            free_vec(input);
             exit(0);
         }
 
         if (strcmp("cd", input->data[0]) == 0)
         {
             chdir(input->data[1]);
+            free_vec(input);
             continue;
         }
+
+        
+        
         execute(input);
+        printf("\n");
+        fflush(stdout);
+        free_vec(input);
     }
 
     return 0;
