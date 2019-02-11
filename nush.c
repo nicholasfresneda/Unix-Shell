@@ -4,49 +4,37 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "tokens.h"
+#include "vec.h"
 
 void
-execute(char* cmd)
+execute(vec* input)
 {
     int cpid;
 
     if ((cpid = fork())) {
         // parent process
-        printf("Parent pid: %d\n", getpid());
-        printf("Parent knows child pid: %d\n", cpid);
 
         // Child may still be running until we wait.
 
         int status;
         waitpid(cpid, &status, 0);
 
-        printf("== executed program complete ==\n");
-
-        printf("child returned with wait code %d\n", status);
-        if (WIFEXITED(status)) {
-            printf("child exited with exit code (or main returned) %d\n", WEXITSTATUS(status));
-        }
     }
     else {
         // child process
-        printf("Child pid: %d\n", getpid());
-        printf("Child knows parent pid: %d\n", getppid());
-
-        for (int ii = 0; ii < strlen(cmd); ++ii) {
-            if (cmd[ii] == ' ') {
-                cmd[ii] = 0;
-                break;
-            }
-        }
-
+        
+        char* program = input->data[0];
         // The argv array for the child.
         // Terminated by a null pointer.
-        char* args[] = {cmd, "one", 0};
+        char* args[input->size]; 
+        for (int i = 0; i < input->size; i++)
+        {
+            args[i] = input->data[i];
+        }   
+        args[input->size] = '\0';
 
-        printf("== executed program's output: ==\n");
-
-        execvp(cmd, args);
-        printf("Can't get here, exec only returns on error.");
+        execvp(program, args);
     }
 }
 
@@ -54,17 +42,29 @@ int
 main(int argc, char* argv[])
 {
     char cmd[256];
-
-    if (argc == 1) {
+    while (1)
+    {
         printf("nush$ ");
         fflush(stdout);
-        fgets(cmd, 256, stdin);
-    }
-    else {
-        memcpy(cmd, "echo", 5);
-    }
+        if (fgets(cmd, 256, stdin) == NULL)
+        {
+            printf("\n");
+            exit(0);
+        }
+        vec* input = make_vec();
+        tokenize(cmd, input);
+        if (strcmp("exit", input->data[0]) == 0)
+        {
+            exit(0);
+        }
 
-    execute(cmd);
+        if (strcmp("cd", input->data[0]) == 0)
+        {
+            chdir(input->data[1]);
+            continue;
+        }
+        execute(input);
+    }
 
     return 0;
 }
