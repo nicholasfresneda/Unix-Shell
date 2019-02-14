@@ -6,6 +6,50 @@
 #include <sys/wait.h>
 #include "tokens.h"
 #include "vec.h"
+#include "ast.h"
+
+int get_op(vec* inputVec, int start)
+{
+    for(int i = start; i < inputVec->size; i++)
+    {
+        if (strcmp(inputVec->data[i], "|") == 0)
+        {
+            return i;
+        }
+
+        if (strcmp(inputVec->data[i], "||") == 0)
+        {
+            return i;
+        }
+
+        if (strcmp(inputVec->data[i], "&") == 0)
+        {
+            return i;
+        }
+
+        if (strcmp(inputVec->data[i], "&&") == 0)
+        {
+            return i;
+        }
+
+        if (strcmp(inputVec->data[i], "<") == 0)
+        {
+            return i;
+        }
+
+        if (strcmp(inputVec->data[i], ">") == 0)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+int convert_to_ast(vec* inputVec)
+{
+    return get_op(inputVec, 0);
+}
 
 void execute_arg(char * argv[])
 {
@@ -100,12 +144,11 @@ main(int argc, char* argv[])
             continue;
         }
 
+        printf("%d\n", convert_to_ast(input));
         
         
-        execute(input);
-        printf("\n");
-        fflush(stdout);
-        free_vec(input);
+        // execute(input);
+         free_vec(input);
     }
 
     return 0;
