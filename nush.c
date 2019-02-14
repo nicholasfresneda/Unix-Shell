@@ -46,9 +46,15 @@ int get_op(vec* inputVec, int start)
     return -1;
 }
 
-int convert_to_ast(vec* inputVec)
+void convert_to_ast(vec* inputVec)
 {
-    return get_op(inputVec, 0);
+    int location = 0;
+    while(get_op(inputVec, location) != -1)
+    {
+        int curLoc = get_op(inputVec, location);
+        printf("%d\n", curLoc);
+        location = curLoc + 1;
+    }
 }
 
 void execute_arg(char * argv[])
@@ -144,7 +150,7 @@ main(int argc, char* argv[])
             continue;
         }
 
-        printf("%d\n", convert_to_ast(input));
+         convert_to_ast(input);
         
         
         // execute(input);
