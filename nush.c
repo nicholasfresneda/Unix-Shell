@@ -157,14 +157,36 @@ void execute_arg(char * argv[])
 int
 main(int argc, char* argv[])
 {
+    char cmd[256];
     //run the script argument (if there is one)
     if (argc != 1)
     {
-        execute_arg(argv);
+        FILE *ptr;
+        ptr = fopen(argv[1], "r");
+        if (fgets(cmd, 256, ptr) == NULL)
+        {
+            exit(0);
+        }
+
+        vec* input = make_vec();
+        tokenize(cmd, input);
+        if (strcmp("exit", input->data[0]) == 0)
+        {
+            free_vec(input);
+            exit(0);
+        }
+
+        shell_ast* ast = convert_to_ast(input);
+        evaluate(ast);
+        free_ast(ast);
+        
+        // execute(input);
+        free_vec(input);
+        fclose(ptr);
         return 0;
     }
 
-    char cmd[256];
+    
     while (1)
     {
         printf("nush$ ");
