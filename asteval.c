@@ -21,7 +21,7 @@ int  evaluate(shell_ast* ast)
 
         if (strcmp(op, "||") == 0)
         {
-           // return i;
+           return handle_or(ast);
         }
 
         if (strcmp(op, "&") == 0)
@@ -31,7 +31,7 @@ int  evaluate(shell_ast* ast)
 
         if (strcmp(op, "&&") == 0)
         {
-         //   return handle_and(ast);
+            return handle_and(ast);
         }
 
         if (strcmp(op, "<") == 0)
@@ -66,7 +66,7 @@ execute(char** input)
         }
     int cpid;
 
-    int status;
+    int status; 
     if ((cpid = fork())) {
         // parent process
 
@@ -74,6 +74,12 @@ execute(char** input)
 
         
         waitpid(cpid, &status, 0);
+        if (WIFEXITED(status) == 0)
+        {
+            return WEXITSTATUS(status);
+        }
+
+        return 1;
     }
     else {
         
@@ -82,8 +88,7 @@ execute(char** input)
         execvp(program, input);
     }
 
-
-    return status;
+    
 }
 
 
@@ -96,7 +101,23 @@ int handle_semi(shell_ast* ast)
     return return1 + return2;
 } 
 
-// int handle_and(shell_ast* ast)
-// {
+int handle_and(shell_ast* ast)
+{
+    int return1, return2 = 0;
+    return1 = evaluate(ast->arg0);
+    if(!return1)
+    {
+        return return1;
+    }
+    
+    return2 = evaluate(ast->arg1);
+    return return1 && return2;
+}
 
-// }
+int handle_or(shell_ast* ast)
+{
+    int return1, return2 = 0;
+    return1 = evaluate(ast->arg0);
+    return2 = evaluate(ast->arg1);
+    return return1 || return2;
+}
