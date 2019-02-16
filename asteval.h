@@ -11,6 +11,6 @@ int execute(char** input);
 int handle_semi(shell_ast* ast);
 int handle_and(shell_ast* ast);
 int handle_or(shell_ast* ast);
-
+int handle_rin(shell_ast* ast);
 
 #endif

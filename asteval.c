@@ -36,7 +36,7 @@ int  evaluate(shell_ast* ast)
 
         if (strcmp(op, "<") == 0)
         {
-           // return i;
+            return handle_rin(ast);
         }
 
         if (strcmp(op, ">") == 0)
@@ -124,4 +124,9 @@ int handle_or(shell_ast* ast)
     }
     return2 = evaluate(ast->arg1);
     return return1 == 0 || return2 == 0;
+}
+
+int handle_rin(shell_ast* ast)
+{
+    return execute_rin(ast->arg0, ast->arg1);
 }
