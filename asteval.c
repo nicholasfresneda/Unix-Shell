@@ -4,11 +4,11 @@
 #include <sys/wait.h>
 #include <string.h>
 
-int evaluate(shell_ast* ast)
+int  evaluate(shell_ast* ast)
 {
     if (ast->op[0] == '=') //not an op
     {
-        execute(ast->cmds);
+        return execute(ast->cmds);
     }
 
     else // is an op, call functions for each op
@@ -31,7 +31,7 @@ int evaluate(shell_ast* ast)
 
         if (strcmp(op, "&&") == 0)
         {
-            //return i;
+         //   return handle_and(ast);
         }
 
         if (strcmp(op, "<") == 0)
@@ -48,6 +48,8 @@ int evaluate(shell_ast* ast)
         {
             return handle_semi(ast);
         }
+
+        return 1;
     }
 }
 
@@ -74,17 +76,10 @@ execute(char** input)
         waitpid(cpid, &status, 0);
     }
     else {
-        // child process
-        int size = sizeof(input) / sizeof(char*);
-        char * args[size+1];
-        for(int i = 0; i <= size; i++)
-        {
-            args[i] = input[i];
-        }
-        args[size+1] = '\0';
-        char* program = args[0];
+        
+        char* program = input[0];
     
-        execvp(program, args);
+        execvp(program, input);
     }
 
 
@@ -99,4 +94,9 @@ int handle_semi(shell_ast* ast)
     return1 = evaluate(ast->arg0);
     return2 = evaluate(ast->arg1);
     return return1 + return2;
-}
+} 
+
+// int handle_and(shell_ast* ast)
+// {
+
+// }

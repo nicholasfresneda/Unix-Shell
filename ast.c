@@ -17,13 +17,13 @@ make_ast_cmd(char** cmds, int start, int end)
     ast->op[0] = '=';
     ast->arg0 = 0;
     ast->arg1 = 0;
-    int size = end - start;
-    char ** new_cmd = (char **) malloc(size * sizeof(char*));
+    ast->size = end - start;
+    ast->cmds = calloc(ast->size + 1, sizeof(char*));
     for(int i = start; i < end; i++)
     {
-        new_cmd[i] = strdup(cmds[i]);
+        ast->cmds[i] = strdup(cmds[i]);
     }
-    ast->cmds = new_cmd;
+    
     return ast;
 }
 
@@ -52,13 +52,12 @@ free_ast(shell_ast* ast)
 
         if (ast->op[0] == '=')
         {
-            int size = sizeof(ast->cmds) / sizeof(char*);
-            for (int i = 0; i < size; i++)
+            for(int i = 0; i <= ast->size; i++)
             {
                 free(ast->cmds[i]);
             }
         }
-
+        free(ast->cmds);
         free(ast->op);
         free(ast);
     }

@@ -80,8 +80,8 @@ shell_ast* convert_to_ast(vec* inputVec)
     shell_ast* opNode = make_ast_op(inputVec->data[opIndex],
      convert_to_ast(left), convert_to_ast(right));
     
-    free(left);
-    free(right);
+    free_vec(left);
+    free_vec(right);
     return opNode;
     // int location = 0;
     // while(1)
@@ -161,27 +161,31 @@ main(int argc, char* argv[])
     //run the script argument (if there is one)
     if (argc != 1)
     {
-        FILE *ptr;
-        ptr = fopen(argv[1], "r");
-        if (fgets(cmd, 256, ptr) == NULL)
+        FILE *ptr = fopen(argv[1], "r");
+        while(1)
         {
-            exit(0);
-        }
+            if (fgets(cmd, 256, ptr) == NULL)
+            {
+                fclose(ptr);
+                exit(0);
+            }
 
-        vec* input = make_vec();
-        tokenize(cmd, input);
-        if (strcmp("exit", input->data[0]) == 0)
-        {
+            vec* input = make_vec();
+            tokenize(cmd, input);
+            if (strcmp("exit", input->data[0]) == 0)
+            {
+                free_vec(input);   
+                exit(0);
+            }
+
+            shell_ast* ast = convert_to_ast(input);
+            evaluate(ast);
+            free_ast(ast);
+            
+            // execute(input);
             free_vec(input);
-            exit(0);
         }
-
-        shell_ast* ast = convert_to_ast(input);
-        evaluate(ast);
-        free_ast(ast);
         
-        // execute(input);
-        free_vec(input);
         fclose(ptr);
         return 0;
     }

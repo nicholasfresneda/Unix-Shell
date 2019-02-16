@@ -15,6 +15,7 @@ typedef struct shell_ast {
     //      or: '=' for arg
     struct shell_ast* arg0;
     struct shell_ast* arg1;
+    int size;
     char** cmds;
 } shell_ast;
 

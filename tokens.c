@@ -66,7 +66,7 @@ void tokenize(char* line, vec * tokens)
       {
          if ((line[i] != '|' && line[i] != '&') || line[i+1] != line[i])
          {
-            char token[1];
+            char token[2];
             token[0] = line[i];
             token[1] = '\0';
             push_vec(tokens, token);
@@ -74,7 +74,7 @@ void tokenize(char* line, vec * tokens)
 
          else if (line[i+1] == line[i])
          {
-            char token[2];
+            char token[3];
             char *ptr = &line[i];
             strncpy(token, ptr, 2);
             token[2] = '\0';
