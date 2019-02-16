@@ -74,7 +74,7 @@ execute(char** input)
 
         
         waitpid(cpid, &status, 0);
-        if (WIFEXITED(status) == 0)
+        if (WIFEXITED(status))
         {
             return WEXITSTATUS(status);
         }
@@ -105,19 +105,23 @@ int handle_and(shell_ast* ast)
 {
     int return1, return2 = 0;
     return1 = evaluate(ast->arg0);
-    if(!return1)
+    if(return1)
     {
         return return1;
     }
-    
+
     return2 = evaluate(ast->arg1);
-    return return1 && return2;
+    return return1 == 0 && return2 == 0;
 }
 
 int handle_or(shell_ast* ast)
 {
     int return1, return2 = 0;
     return1 = evaluate(ast->arg0);
+    if (!return1)
+    {
+        return return1;
+    }
     return2 = evaluate(ast->arg1);
-    return return1 || return2;
+    return return1 == 0 || return2 == 0;
 }
