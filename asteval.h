@@ -12,5 +12,8 @@ int handle_semi(shell_ast* ast);
 int handle_and(shell_ast* ast);
 int handle_or(shell_ast* ast);
 int handle_rin(shell_ast* ast);
+int handle_rout(shell_ast* ast);
+int handle_pipe(shell_ast* ast);
+int handle_background(shell_ast* ast);
 
 #endif

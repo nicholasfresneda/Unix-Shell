@@ -12,7 +12,7 @@
 
 int get_op(vec* inputVec)
 {
-    for(int i = 0; i < inputVec->size; i++)
+    for(int i = inputVec->size -1; i >= 0; i--)
     {
         if (strcmp(inputVec->data[i], "|") == 0)
         {
@@ -162,6 +162,11 @@ main(int argc, char* argv[])
     if (argc != 1)
     {
         FILE *ptr = fopen(argv[1], "r");
+        if (ptr == NULL)
+        {
+            printf("Incorrect file path!\n");
+            exit(1);
+        }
         while(1)
         {
             if (fgets(cmd, 256, ptr) == NULL)
@@ -174,15 +179,15 @@ main(int argc, char* argv[])
             tokenize(cmd, input);
             if (strcmp("exit", input->data[0]) == 0)
             {
-                free_vec(input);   
+                free_vec(input);  
+                fclose(ptr); 
                 exit(0);
             }
 
             shell_ast* ast = convert_to_ast(input);
             evaluate(ast);
             free_ast(ast);
-            
-            // execute(input);
+
             free_vec(input);
         }
         
