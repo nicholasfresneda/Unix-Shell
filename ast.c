@@ -62,23 +62,3 @@ free_ast(shell_ast* ast)
         free(ast);
     }
 }
-
-// int
-// ast_eval(calc_ast* ast)
-// {
-//     switch (ast->op) {
-//     case '=':
-//         return ast->value;
-//     case '+':
-//         return ast_eval(ast->arg0) + ast_eval(ast->arg1);
-//     case '-':
-//         return ast_eval(ast->arg0) - ast_eval(ast->arg1);
-//     case '*':
-//         return ast_eval(ast->arg0) * ast_eval(ast->arg1);
-//     case '/':
-//         return ast_eval(ast->arg0) / ast_eval(ast->arg1);
-//     default:
-//         fprintf(stderr, "Unknown op: %c\n", ast->op);
-//         exit(1);
-//     }
-// }

@@ -7,7 +7,7 @@
  #include <fcntl.h>
 
 
-
+//evaluate abstract syntax tree, executing all shell commands
 int  evaluate(shell_ast* ast)
 {
     if (ast->op[0] == '=') //not an op
@@ -75,12 +75,8 @@ execute(char** input)
     int cpid;
 
     int status; 
-    if ((cpid = fork())) {
-        // parent process
-
-        // Child may still be running until we wait.
-
-        
+    if ((cpid = fork())) 
+    {
         waitpid(cpid, &status, 0);
         if (WIFEXITED(status))
         {
@@ -91,7 +87,6 @@ execute(char** input)
     }
     else 
     {
-        
         char* program = input[0];
     
         execvp(program, input);
@@ -107,7 +102,7 @@ int handle_semi(shell_ast* ast)
     int return1, return2 = 0;
     return1 = evaluate(ast->arg0);
     return2 = evaluate(ast->arg1);
-    return return1 + return2;
+    return return1 || return2;
 } 
 
 int handle_and(shell_ast* ast)
@@ -141,8 +136,6 @@ int handle_rin(shell_ast* ast)
     int status; 
     if ((cpid = fork()))
     {
-        // parent process
-        // Child may still be running until we wait.
         waitpid(cpid, &status, 0);
         if (WIFEXITED(status))
         {
@@ -168,9 +161,7 @@ int handle_rout(shell_ast* ast)
     int cpid;
     int status; 
     if ((cpid = fork()))
-    {
-        // parent process
-        // Child may still be running until we wait.
+    { 
         waitpid(cpid, &status, 0);
         if (WIFEXITED(status))
         {
@@ -185,7 +176,7 @@ int handle_rout(shell_ast* ast)
         close(1);
         dup(fd);
         close(fd);
-        return evaluate(ast->arg0);
+        exit(evaluate(ast->arg0));
         
         
         
@@ -198,8 +189,6 @@ int handle_pipe(shell_ast* ast)
     int status; 
     if ((cpid = fork()))
     {
-        // parent process
-        // Child may still be running until we wait.
         waitpid(cpid, &status, 0);
         if (WIFEXITED(status))
         {
@@ -224,8 +213,6 @@ int handle_pipe(shell_ast* ast)
         int status; 
         if ((cpid = fork()))
         {
-            // parent process
-            // Child may still be running until we wait.
             waitpid(cpid, &status, 0);
             if (WIFEXITED(status))
             {

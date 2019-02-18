@@ -1,3 +1,8 @@
+//CS3650 Challenge Assignment 1
+//Nicholas Fresneda
+
+
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +14,7 @@
 #include "ast.h"
 #include "asteval.h"
 
-
+//returns the location of an operator (starting from the end) in the given vector
 int get_op(vec* inputVec)
 {
     for(int i = inputVec->size -1; i >= 0; i--)
@@ -53,7 +58,7 @@ int get_op(vec* inputVec)
     return -1;
 }
 
-//slice function written by Nat Tuck, taken from lecture notes
+//slice function written by Nat Tuck, taken from lecture notes 
 vec*
 slice(vec* xs, int i0, int i1)
 {
@@ -64,7 +69,8 @@ slice(vec* xs, int i0, int i1)
     return ys;
 }
 
-
+//function that takes a vector and converts it into an abstract syntax tree,
+//originally written by Nat Tuck, taken from lecture notes and modified
 shell_ast* convert_to_ast(vec* inputVec)
 {
 
@@ -83,22 +89,6 @@ shell_ast* convert_to_ast(vec* inputVec)
     free_vec(left);
     free_vec(right);
     return opNode;
-    // int location = 0;
-    // while(1)
-    // {
-    //     int curLoc = get_op(inputVec, location);
-    //     printf("%d\n", curLoc);
-    //     int leftStart = location;
-    //     int leftEnd = curLoc -1;
-    //     int rightStart = curLoc + 1;
-    //     if(nextLoc != -1)
-    //     {
-    //         int rightEnd = nextLoc - 1;
-    //     }
-        
-         
-    //     location = curLoc + 1;
-    // }
 }
 
 void execute_arg(char * argv[])
@@ -116,39 +106,6 @@ void execute_arg(char * argv[])
             execvp(argv[1], arg);
         }
 }
-// /**
-//  *  Given a vector of inputs, executes the command.
-//  */
-// void
-// execute(vec* input)
-// {
-//     int cpid;
-
-//     if ((cpid = fork())) {
-//         // parent process
-
-//         // Child may still be running until we wait.
-
-//         int status;
-//         waitpid(cpid, &status, 0);
-
-//     }
-//     else {
-//         // child process
-        
-//         char* program = input->data[0];
-//         // The argv array for the child.
-//         // Terminated by a null pointer.
-//         char* args[input->size]; 
-//         for (int i = 0; i < input->size; i++)
-//         {
-//             args[i] = input->data[i];
-//         }   
-//         args[input->size] = '\0';
-
-//         execvp(program, args);
-//     }
-// }
 
 /**
  *  Entry point for nush. Runs loop that reads a line of input
@@ -174,7 +131,7 @@ main(int argc, char* argv[])
                 fclose(ptr);
                 exit(0);
             }
-
+            fflush(ptr);
             vec* input = make_vec();
             tokenize(cmd, input);
             if (strcmp("exit", input->data[0]) == 0)
@@ -219,22 +176,9 @@ main(int argc, char* argv[])
             exit(0);
         }
 
-        // if (strcmp("cd", input->data[0]) == 0)
-        // {
-        //     chdir(input->data[1]);
-        //     free_vec(input);
-        //     continue;
-        // }
-
-        // for(int i = 0; i < input->size; i++)
-        // {
-        //     printf("%s\n", input->data[i]);
-        // }
         shell_ast* ast = convert_to_ast(input);
         evaluate(ast);
         free_ast(ast);
-        
-        // execute(input);
         free_vec(input);
     }
 

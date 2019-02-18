@@ -5,6 +5,7 @@
 #include "ast.h"
 #include "vec.h"
 
+//list of functions used to evaluate the shell abstract syntax tree
 int evaluate(shell_ast* ast);
 int execute(char** input);
 
